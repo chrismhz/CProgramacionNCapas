@@ -1,0 +1,234 @@
+﻿@model ML.Producto
+@{
+    ViewBag.Title = "GetAllC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Animación de imagen */
+    .product-img {
+        transition: transform 0.5s ease-in-out, box-shadow 0.3s ease-in-out;
+        border-radius: 8px;
+        margin-top: 30px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /*background-color: #fff8e1;*/ /*Color fondo de la imagen*/
+        background-color: #ffffff; /*Color fondo de la imagen*/
+    }
+
+        .product-img:hover {
+            transform: scale(1.15);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+    /* Estilo Cards */
+    .card {
+        border: none;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+        .card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Estilo botones */
+    .btn {
+        border-radius: 25px;
+        padding: 10px 20px;
+    }
+
+    .btn-warning {
+        background-color: #ffc117;
+        /*border: none;*/
+        color: black;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-warning:hover {
+            background-color: #e4a11b;
+        }
+
+    .btn-danger {
+        background-color: #d9534f;
+        /*border: none;*/
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+
+    /* Estilo texto */
+    .card-title {
+        font-weight: bold;
+        font-size: 1.25rem;
+        color: #333;
+    }
+
+    .card-text {
+        color: #555;
+    }
+
+    /* Margen inferior */
+    .card-footer {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    .card-cafeAnaranjado {
+        background-color: #ffecb3; /* Fondo de color CafeAnaranjado */
+        /*color: white;*/
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <h2 class="text-center">Productos</h2>
+        <h5> Visualizacion de una lista de Productos que fueron registrados en la base de datos para la realizacion de este proyecto </h5>
+        <hr />
+    </div>
+
+
+    <div class="row">
+
+        @using (Html.BeginForm("GetAllC", "Producto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <h5 class="text-center">Busqueda por Categoria</h5>
+            <br />
+            <div class="row">
+                <div class="col-3">
+                    @Html.LabelFor(model => model.SubCategoria.Categoria.Categorias)
+                    @Html.DropDownListFor(model => model.SubCategoria.Categoria.IdCategoria, new SelectList(Model.SubCategoria.Categoria.Categorias, "IdCategoria", "Nombre"), "--- Selecciona una Categoria ---", new { @class = "form-control", @id = "ddlCategoria", @onchange = "SubCategoriaGetByIdCategoria()" }) 
+                </div>
+
+                <div class="col-3">
+                    @Html.LabelFor(model => model.SubCategoria.SubCategorias)
+                    @if (Model.SubCategoria.SubCategorias != null)
+                    {
+                        @Html.DropDownListFor(model => model.SubCategoria.IdSubCategoria, new SelectList(Model.SubCategoria.SubCategorias, "IdSubCategoria", "Nombre"), "--- Selecciona una SubCategoria ---", new { @class = "form-control", @id = "ddlSubcategoria" })
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.SubCategoria.IdSubCategoria, new SelectList(String.Empty), "- Selecciona una SubCategoria -", new { @class = "form-control", @id = "ddlSubcategoria" })
+                    }
+                </div>
+
+                <div class="col-3 d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-success">Buscar</button>
+                    <button type="button" class="btn btn-danger" onclick="cancelarDDL()">Cancelar</button>
+                </div>
+
+            </div>
+
+            <br />
+            <hr />
+        }
+
+    </div>
+    
+
+    <div class="row">
+        <div class="col-12 mb-4 text-center">
+            <a href="@Url.Action("Form", "Producto")" class="btn btn-primary">
+                <i class="bi bi-bag-plus-fill"></i> Agregar
+            </a>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @if (Model.Productos != null)
+        {
+            foreach (ML.Producto producto in Model.Productos)
+            {
+                <div class="col">
+                    <div class="card card-cafeAnaranjado h-100">
+                        <div class="card-img-top text-center">
+                            @if (producto.Imagen == null)
+                            {
+                                <img src="~/Content/Img/Img_DefaultProduct.png" class="card-img-top product-img" alt="Imagen del producto" width="100" height="100" />
+                            }
+                            else
+                            {
+                                <img src="data:image/png;base64,@Convert.ToBase64String(producto.Imagen)" class="card-img-top img-fluid product-img" alt="Imagen del producto" style="width: 200px; height: 200px;" />
+                            }
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">@producto.Nombre</h5>
+                            <p class="card-text">@producto.Descripcion</p>
+                            <p class="card-text"><strong>Subcategoría:</strong> @producto.SubCategoria.Nombre</p>
+
+                            <p class="card-text"><strong>Precio:</strong> $@producto.Precio</p>
+                        </div>
+
+                        <div class="card-footer text-center">
+                            <a class="btn btn-warning" href="@Url.Action("Form", "Producto", new { IdProducto = producto.IdProducto })">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+
+                            <a class="btn btn-danger" href="@Url.Action("Delete", "Producto", new { IdProducto = producto.IdProducto })"
+                               onclick="return confirm('¿Desea eliminar este producto?')">
+                                <i class="bi bi-trash-fill"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.MensajeError
+            </div>
+        }
+    </div>
+
+
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script type="text/javascript">
+
+    function SubCategoriaGetByIdCategoria() {
+        var idCategoria = $('#ddlCategoria').val();
+
+    $.ajax({
+        url: '@Url.Action("GetSubCategoriasByIdCategorias", "Producto")',
+        type: 'GET',
+        dataType: 'JSON',
+        data: { IdCategoria: idCategoria },
+        success: function (result) {
+            if (result.Correct) {
+                var subcategorias = result.Objects;
+
+                $('#ddlSubcategoria').empty();
+
+                var options = '<option value="" selected>--- Selecciona una SubCategoria ---</option>';
+
+                $.each(subcategorias, function (index, subcategoria) {
+                    options += '<option value="' + subcategoria.IdSubCategoria + '">' + subcategoria.Nombre + '</option>';
+                });
+
+                $('#ddlSubcategoria').empty().append(options);
+            } else {
+                alert('Error al cargar subcategorías: ' + result.ErrorMessage);
+            }
+        },
+        error: function () {
+            alert('Error al recibir las subcategorías.');
+        }
+    });
+    }
+
+
+    function cancelarDDL() {
+        var ddlCategoria = document.getElementById("ddlCategoria");
+        ddlCategoria.selectedIndex = 0;
+
+        var ddlSubcategoria = document.getElementById("ddlSubcategoria");
+        ddlSubcategoria.selectedIndex = 0;
+    }
+
+</script>

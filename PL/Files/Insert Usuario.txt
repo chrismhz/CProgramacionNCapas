@@ -1,0 +1,12 @@
+Nombre|ApellidoPaterno|ApellidoMaterno|UserName|Email|Password|Sexo|Telefono|Celular|FechaNacimiento|CURP|IdRol|Imagen|Status|Calle|NumeroInterior|NumeroExterior|IdColonia
+Alexis|Hernandez|Martinez|AlexHernandez|alexhernandez@gmail.com|123456|H|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|1|null|1|La rosa|18|118|1
+Marisol|Perez|Perez|MarisolPerez|marisolperez@gmail.com|123456|M|5611280710|5611280710|05/05/2002|MAHC011005HMCRRHA4|2|null|1|Gral. Abelardo Rodriguez|17|117|2
+Karla|Arce|Hernandez|KarlaArce|karlarce@gmail.com|123456|M|5611280710|5611280710|05/05/2002|MAHC011005HMCRRHA4|2|null|1|Bucareli|11|111|3
+Enrique|Martinez|Arce|EnriqueMartinez|enriquemartinez@gmail.com|123456|H|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|2|null|1|La rosa|18|118|1
+Axel|Nepomuceno|Blas|AxelBlas|axelblas@gmail.com|123456|H|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|2|null|1|Gral. Abelardo Rodriguez|17|117|2
+Juan|Perez|Roque|JuanPerez|juanperez@gmail.com|123456|H|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|2|null|1|Bucareli|11|111|3
+Erika|Arce|Leonardo|ErikaArce|erikaarce@gmail.com|123456|M|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|2|null|1|La rosa|18|118|1
+Paola|Castillo|Martinez|PaolaMartinez|paolamartinez@gmail.com|123456|M|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|2|null|1|Gral. Abelardo Rodriguez|17|117|2
+Alejandra|Martinez|Castillo|AlejandraCastillo|alejandracastillo@gmail.com|123456|M|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|2|null|1|Bucareli|11|111|3
+Emmanuel|Alvarado|Cabrera|EmmanuelAlvarado|emmanuelalvarado@gmail.com|123456|H|5528517627|5528517627|05/05/2002|MAHC011005HMCRRHA4|2|null|1|La rosa|18|118|1
+

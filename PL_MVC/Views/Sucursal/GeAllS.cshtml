@@ -1,0 +1,168 @@
+﻿@model ML.Sucursal
+@{
+    ViewBag.Title = "GeAllS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <h3 class="text-center">Sucursales</h3>
+        <hr />
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-4 text-center">
+            <a href="@Url.Action("Form", "Sucursal")" class="btn btn-primary">
+                <i class="bi bi-shop"></i>
+                Agregar Sucursal
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="table-responsive">
+                @if (Model.Sucursales != null)
+                {
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Latitud</th>
+                                <th>Longitud</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (ML.Sucursal sucursal in Model.Sucursales)
+                            {
+                                <tr>
+
+                                    <td>@sucursal.Nombre</td>
+                                    <td>@sucursal.Latitud</td>
+                                    <td>@sucursal.Longitud</td>
+                                    <td>
+                                        <a class="btn btn-warning" href="@Url.Action("Form","Sucursal", new { IdSucursal = sucursal.IdSucursal })"> <i class="bi bi-pencil-square"></i> </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" href="@Url.Action("Delete", "Sucursal",  new { IdSucursal = sucursal.IdSucursal })"
+                                           onclick="return confirm('¿Desea eliminar esta Sucursal?')">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.MensajeError
+                    </div>
+                }
+
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div id="map" style="height: 470px; width: 600px;"></div>
+            <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&callback=initMap&libraries=places" defer></script>
+            <script>
+                let map;
+                let infoWindow;
+
+                // Se crea un array para traer las sucursales que 
+                const sucursales = [
+                    @if (Model.Sucursales != null && Model.Sucursales.Any())
+                    {
+                        foreach (ML.Sucursal sucursal in Model.Sucursales)
+                        {
+                            <text>{ lat: @sucursal.Latitud, lng: @sucursal.Longitud, nombre: '@sucursal.Nombre' },</text>
+                        }
+                    }
+                ];
+
+                function initMap() {
+                    const mapDiv = document.getElementById("map");
+                    const bounds = new google.maps.LatLngBounds(); // Creacion de objeto LatLngBounds
+
+                    map = new google.maps.Map(mapDiv, {
+                        center: { lat: 19.430482044483313, lng: -99.16163406195687 }, // Punto Central al ejecutar
+                       //zoom = 7         
+                    });
+
+                    infoWindow = new google.maps.InfoWindow();
+
+                    // Se crean marcadores para cada Sucursal
+                    sucursales.forEach(sucursal => {
+                        const position = { lat: sucursal.lat, lng: sucursal.lng };
+                        const marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            title: sucursal.nombre
+                        });
+
+                        // Extendemos los límites del mapa para incluir cada sucursal
+                        bounds.extend(position);
+
+                        
+                        /*marker.addListener('click', () => {
+                            infoWindow.setContent(sucursal.nombre);
+                            infoWindow.open(map, marker);
+                        });*/
+                        // Abrir InfoWindow al hacer clic en el marcador
+                        marker.addListener('click', () => {
+                            // Muestra el nombre, latitud y longitud
+                            const contentString = `
+                                <div>
+                                    <strong>Sucursal: </strong> ${sucursal.nombre} <br>
+                                    <strong>Latitud: </strong> ${sucursal.lat} <br>
+                                    <strong>Longitud: </strong> ${sucursal.lng} <br>
+                                </div>
+                            `;
+
+                            // Establecer el contenido del InfoWindow
+                            infoWindow.setContent(contentString);
+                            infoWindow.open(map, marker);
+                        });
+                    
+                    });
+
+                    // Ajustar el mapa para mostrar todos los marcadores
+                    map.fitBounds(bounds);
+                }
+
+            </script>
+        </div>
+
+        @*<div class="col-6">
+            <div id="map" style="height: 470px; width: 600px;"></div>
+            <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&callback=initMap&libraries=places"></script>
+            <script>
+                let coordenadas = { lat: 19.430482044483313, lng: -99.16163406195687 };
+                let map;
+                let marcador;
+
+                function initMap() {
+                    const mapDiv = document.getElementById("map");
+                    map = new google.maps.Map(mapDiv, {
+                        center: coordenadas,
+                        zoom: 17,
+                    });
+                    marcador = new google.maps.Marker({
+                        position: coordenadas,
+                        map: map,
+                    });
+                }
+            </script>
+        </div>*@
+
+    </div>
+
+</div>
+
+
+

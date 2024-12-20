@@ -1,0 +1,240 @@
+﻿@model ML.ProductoSucursal
+@{
+    ViewBag.Title = "GetAllPS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="row">
+            <h2 class="text-center">GETALL Productos - Sucursales</h2>
+            <h5 class="text-center">Asignacion de productos con sus Sucursales, estableciendo la relacion que ambos comparten. </h5>
+            <hr />
+        </div>
+    </div>
+
+    <div id="busqueda">
+        <div class="row">
+            <h5>Seleccionar la Sucursal para consultar los productos. </h5>
+            @using (Html.BeginForm("GetAllPS", "ProductoSucursal", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="col-4 d-flex justify-content-between">
+                    <div class="col-md-8">
+                        @*@Html.LabelFor(model => model.Sucursal, new { @class = "form-label" })*@
+                        @Html.DropDownListFor(model => model.Sucursal.IdSucursal, new SelectList(Model.Sucursal.Sucursales, "IdSucursal", "Nombre"), "---Selecciona una Sucursal---", new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-md-2 text-right">
+                        <button type="submit" class="btn btn-success">Buscar</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <hr />
+
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Editar</th>
+                        <th>Imagen</th>
+                        <th>Producto</th>
+                        <th>Sucursal</th>
+                        <th>Stock</th>
+                        <th>Guardar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+
+                <h3>Productos que pertenen a la sucursal</h3>
+                <tbody>
+                    @foreach (ML.ProductoSucursal productoSucursal in Model.ProductosSucursales)
+                    {
+                        <tr>
+                            @*<td>
+                                    <a href="javascript:void(0);" onclick="habilitarStock(@productoSucursal.IdProductoSucursal);">
+                                        <button class="btn btn-warning">Editar</button>
+                                    </a>
+                                </td>*@
+                            <td>
+                                <a href="javascript:void(0);" onclick="habilitarStock(@productoSucursal.IdProductoSucursal);">
+                                    <button id="btnEditarCancelar_@productoSucursal.IdProductoSucursal" class="btn btn-warning">
+                                        Editar
+                                    </button>
+                                </a>
+
+                            </td>
+
+                            <td>
+                                @if (productoSucursal.Producto.Imagen == null)
+                                {
+                                    <img id="img" src="~/Content/img/Default2.jpg" width="70" height="70" />
+                                }
+                                else
+                                {
+                                    <img id="img" src="data:image/png;base64,@Convert.ToBase64String(productoSucursal.Producto.Imagen)" width="70" height="70" />
+                                }
+                            </td>
+                            <td>@productoSucursal.Producto.Nombre</td>
+                            <td>@productoSucursal.Sucursal.Nombre</td>
+
+                            <form action="@Url.Action("UpdatePS", "ProductoSucursal")" method="post">
+
+                                <input type="hidden" name="IdProductoSucursal" value="@productoSucursal.IdProductoSucursal" />
+
+                            <td>
+                                <div>
+                                    <input class="form-control" id="stockInput_@productoSucursal.IdProductoSucursal" name="Stock" type="number"
+                                           value="@productoSucursal.Stock" placeholder="Sin stock disponible" disabled>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <button type="submit" class="btn btn-primary">
+                                    Guardar
+                                </button>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("DeletePS", "ProductoSucursal", new { IdProductoSucursal = productoSucursal.IdProductoSucursal })"
+                                   onclick="return confirm('¿Estás seguro que deseas eliminar?')">
+                                    <button type="button" class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
+                                </a>
+                            </td>
+
+
+
+                            </form>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+    /*function habilitarStock(idProductoSucursal) {
+        var stockInput = document.getElementById('stockInput_' + idProductoSucursal);
+        if (stockInput) {
+            stockInput.disabled = false; // Habilita el input
+        }
+    }*/
+
+    function habilitarStock(idProductoSucursal) {
+        var stockInput = document.getElementById('stockInput_' + idProductoSucursal);
+        var btnEditarCancelar = document.getElementById('btnEditarCancelar_' + idProductoSucursal);
+
+        if (stockInput.disabled) {
+            // Si el input está deshabilitado, habilitarlo y cambiar el texto del botón
+            stockInput.disabled = false;
+            btnEditarCancelar.textContent = 'Cancelar';
+            btnEditarCancelar.classList.remove('btn-warning');
+            btnEditarCancelar.classList.add('btn-secondary');
+        } else {
+            // Si el input está habilitado, deshabilitarlo y cambiar el texto del botón
+            stockInput.disabled = true;
+            btnEditarCancelar.textContent = 'Editar';
+            btnEditarCancelar.classList.remove('btn-danger');
+            btnEditarCancelar.classList.add('btn-warning');
+        }
+    }
+
+
+</script>
+
+@*<head>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    </head>*@
+
+@*<div class="container">
+        <div class="row">
+            <h2 class="text-center">GETALL Productos - Sucursales</h2>
+            <h5 class="text-center">Asignacion de productos con sus Sucursales, estableciendo la relacion que ambos comparten. </h5>
+            <hr />
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h5>Seleccionar la Sucursal para consultar los productos. </h5>
+                @using (Html.BeginForm("GetAllPS", "ProductoSucursal", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.DropDownListFor(model => model.Sucursal.IdSucursal, new SelectList(Model.Sucursal.Sucursales, "IdSucursal", "Nombre", -1), "--- Selecciona una Sucursal ---", new { @class = "form-control" })
+                }
+                <br />
+                <button type="submit" class="btn btn-success">Buscar</button>
+                <br />
+            </div>
+
+            <hr />
+        </div>
+
+
+
+        <div class="row">
+            <div class="table-responsive">
+                @if (Model.ProductosSucursales != null && Model.ProductosSucursales.Count > 0)
+                {
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Editar</th>
+                                <th>Imagen</th>
+                                <th>Producto</th>
+                                <th>Sucursal</th>
+                                <th>Stock</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+
+                        <h3>Productos que pertenen a la sucursal</h3>
+                        <tbody>
+                            @foreach (ML.ProductoSucursal productoSucursal in Model.ProductosSucursales)
+                            {
+                                <tr>
+                                    <td>
+                                        <a class="btn btn-warning" href="@Url.Action("Form","ProductoSucursal", new { IdProductoSucursal = productoSucursal.IdProductoSucursal })"> Editar </a>
+                                    </td>
+                                    <td>
+                                        @if (productoSucursal.Producto.Imagen == null)
+                                        {
+                                            <img id="img" src="~/Content/Img/Img_DefaultProduct.png" width="100" height="100" />
+                                        }
+                                        else
+                                        {
+                                            <img id="img" src="data:image/png;base64,@Convert.ToBase64String(productoSucursal.Producto.Imagen)" width="100" height="100" />
+                                        }
+                                    </td>
+                                    <td>@productoSucursal.Producto.Nombre</td>
+                                    <td>@productoSucursal.Sucursal.Nombre</td>
+                                    <td>
+                                        <input type="text" name="Stock" value="@productoSucursal.Stock" />
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary" href="@Url.Action("Form","ProductoSucursal", new { IdProductoSucursal = productoSucursal.IdProductoSucursal })"> Guardar</a>
+                                        <a class="btn btn-danger" href="@Url.Action("Form","ProductoSucursal", new { IdProductoSucursal = productoSucursal.IdProductoSucursal })"> <i class="bi bi-trash-fill"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.MensajeError
+                    </div>
+                }
+            </div>
+        </div>
+    </div>*@
+

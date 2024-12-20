@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8aaed8f6c6914e718ed4d1a8e05de09a" Name="Diagram1" ZoomLevel="72">
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.sysdiagrams" Width="1.5" PointX="0.5" PointY="10.125" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Rol" Width="1.5" PointX="0.75" PointY="2.125" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Estado" Width="1.5" PointX="5.375" PointY="1.375" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Municipio" Width="1.5" PointX="7.625" PointY="1.25" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Municipio__IdEst__3A81B327" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Direccion" Width="1.5" PointX="12.125" PointY="1.75" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Usuario" Width="1.5" PointX="3" PointY="0.75" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Direccion__IdUsu__5812160E" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK_Usuario_Rol" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Colonia" Width="1.5" PointX="9.875" PointY="1.125" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Colonia__IdMunic__3D5E1FD2" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Direccion__IdUsu__571DF1D5" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Categoria" Width="1.5" PointX="3.75" PointY="6.25" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Producto" Width="1.5" PointX="8.25" PointY="5.875" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.SubCategoria" Width="1.5" PointX="6" PointY="6" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__SubCatego__IdCat__628FA481" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Producto__IdSubC__68487DD7" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.ProductoSucursal" Width="1.5" PointX="10.5" PointY="6.125" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Sucursal" Width="1.5" PointX="8.25" PointY="10.125" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK_ProductoSucursal_Producto" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK_ProductoSucursal_Sucursal" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.ActualizacionPedidos" Width="1.5" PointX="14.375" PointY="9.625" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.DetallePedido" Width="1.5" PointX="16.625" PointY="5.5" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.EstadoPedido" Width="1.5" PointX="12.125" PointY="14.125" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Pedidos" Width="1.5" PointX="14.375" PointY="4.625" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.Repartidor" Width="1.5" PointX="12.125" PointY="9.125" />
+        <EntityTypeShape EntityType="CMartinezProgramacionNCapasModel.TipoPago" Width="1.5" PointX="12.125" PointY="11.875" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Actualiza__Fecha__41EDCAC5" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Actualiza__IdEst__42E1EEFE" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__DetallePe__Canti__45BE5BA9" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__DetallePe__IdPro__46B27FE2" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Pedidos__IdDirec__3D2915A8" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Pedidos__IdEstad__3E1D39E1" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Pedidos__IdRepar__3A4CA8FD" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Pedidos__IdRepar__3F115E1A" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Pedidos__IdSucur__3B40CD36" />
+        <AssociationConnector Association="CMartinezProgramacionNCapasModel.FK__Pedidos__IdTipoP__3C34F16F" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

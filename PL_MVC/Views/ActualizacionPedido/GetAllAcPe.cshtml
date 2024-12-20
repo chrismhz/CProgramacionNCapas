@@ -1,0 +1,72 @@
+﻿@model ML.ActualizacionPedido
+@{
+    ViewBag.Title = "GetAllAcPe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">Actualizacion de Pedidos</h2>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("Form", "ActualizacionPedido")" class="btn btn-primary">
+                <i class="bi bi-bag-fill"></i> Indica el pedido que se tiene
+            </a>
+            <br />
+            <br />
+            <div class="table-responsive">
+                @if (Model.ActualizacionPedidoss != null)
+                {
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>IdActualizacionPedido</th>
+                                <th>IdPedido</th>
+                                <th>EstadoPedido</th>
+                                <th>Descripcion</th>
+                                <th>FechaActualizacion</th>
+                                <th>Actualizar</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (ML.ActualizacionPedido ActualizacionPedido in Model.ActualizacionPedidoss)
+                            {
+                                <tr>
+                                    <td>@ActualizacionPedido.IdActualizacionPedido</td>
+                                    <td>@ActualizacionPedido.Pedido.IdPedido</td>
+                                    <td>@ActualizacionPedido.EstadoPedido.Descripcion</td>
+                                    <td>@ActualizacionPedido.Descripcion</td>
+                                    <td>@ActualizacionPedido.FechaActualizacion</td>
+                                    <td>
+                                        <a class="btn btn-warning" href="@Url.Action("Form","ActualizacionPedido", new { IdActualizacionPedido = ActualizacionPedido.IdActualizacionPedido })"> <i class="bi bi-pencil-square"></i> </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" href="@Url.Action("Delete", "ActualizacionPedido",  new { IdActualizacionPedido = ActualizacionPedido.IdActualizacionPedido })"
+                                           onclick="return confirm('¿Desea eliminar esta Actualización?')">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.MensajeError
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

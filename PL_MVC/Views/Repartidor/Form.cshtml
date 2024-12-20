@@ -1,0 +1,110 @@
+﻿@model ML.Repartidor
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="col-12">
+        <h2 class="text-center">Registro de un nuevo Repartidor</h2>
+        <h5 class="text-center"> Formulario para el ingreso de un nuevo Repartidor y cargarlo al sistema.</h5>
+        <hr />
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            @using (Html.BeginForm("Form", "Repartidor", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @* @Html.LabelFor(model => model.IdRepartidor, new { @class = "form-label" })*@
+                @Html.TextBoxFor(model => model.IdRepartidor, "{0:#.#}", new { @class = "form-control", type = "hidden" })
+                <br />
+                @Html.LabelFor(model => model.Nombre, new { @class = "form-label" })
+                @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @id = "Nombre", @onkeypress = "ValidarNombre(event)" })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                <br />
+                @Html.LabelFor(model => model.ApellidoPaterno, new { @class = "form-label" })
+                @Html.TextBoxFor(model => model.ApellidoPaterno, new { @class = "form-control", @id = "ApellidoPaterno", @onkeypress = "ValidarApellidoPaterno(event)" })
+                @Html.ValidationMessageFor(model => model.ApellidoPaterno, "", new { @class = "text-danger" })
+
+                <br />
+                @Html.LabelFor(model => model.ApellidoMaterno, new { @class = "form-label" })
+                @Html.TextBoxFor(model => model.ApellidoMaterno, new { @class = "form-control", @id = "ApellidoMaterno", @onkeypress = "ValidarApellidoMaterno(event)" })
+                @Html.ValidationMessageFor(model => model.ApellidoMaterno, "", new { @class = "text-danger" })
+
+                <br />
+                <br />
+                <div>
+                    <button type="submit" class="btn btn-primary">Guadar Repartidor</button>
+                    @Html.ActionLink("Regresar", "GetAllRep", "Repartidor", new { @class = "btn btn-danger" })
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    input.valid {
+        border-color: green;
+    }
+
+    input.invalid {
+        border-color: red;
+    }
+</style>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+    $('#Nombre').bind("cut copy paste", function (e) {
+        e.preventDefault();
+    });
+
+    $('#ApellidoPaterno').bind("cut copy paste", function (e) {
+        e.preventDefault();
+    });
+
+    $('#ApellidoMaterno').bind("cut copy paste", function (e) {
+        e.preventDefault();
+    });
+</script>
+
+<script type="text/javascript">
+    function ValidarNombre(event) {
+        var nombre = String.fromCharCode(event.charCode); //Convt ccaracter ing a r
+        var expRe = /^[A-Za-z\s\.]+$/;
+
+        if (!expRe.test(nombre)) { //ev ci
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+    function ValidarApellidoPaterno(event) {
+        var apellidoPaterno = String.fromCharCode(event.charCode);
+        var expRe = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s\.]+$/; //   ^[A-Za-z\s\.]+$
+
+        if (!expRe.test(apellidoPaterno)) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+    function ValidarApellidoMaterno(event) {
+        var apellidoMaterno = String.fromCharCode(event.charCode);
+        var expRe = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s\.]+$/;
+
+        if (!expRe.test(apellidoMaterno)) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+</script>

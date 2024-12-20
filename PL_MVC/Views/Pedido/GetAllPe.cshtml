@@ -1,0 +1,85 @@
+﻿@model ML.Pedido 
+@{
+    ViewBag.Title = "GetAllPe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">Pedidos</h2>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("Form", "Pedido")" class="btn btn-primary">
+                <i class="bi bi-bag-fill"></i> Agregar Actualizacion Pedido
+            </a>
+            <br />
+            <br />
+            <div class="table-responsive">
+
+                @if (Model.Pedidos != null)
+                {
+                    <table class=" table table-hover">
+                        <thead>
+                            <tr>
+                                @*<th>IdPedido</th>*@
+                                <th>NombreUsuario</th>
+                                <th>Sucursal</th>
+                                <th>TipoPago</th>
+                                <th>Direccion</th>
+                                <th>EstadoPedido</th>
+                                <th>FechaCreación</th>
+                                <th>Repartidor</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (ML.Pedido Pedido in Model.Pedidos)
+                            {
+                                <tr>
+                                    @*<td>@Pedido.IdPedido</td>*@
+                                    <td>@Pedido.Usuario.Nombre</td>
+                                    <td>@Pedido.Sucursal.Nombre</td>
+                                    <td>@Pedido.TipoPago.Nombre</td>
+                                    <td>@Pedido.Direccion.Calle</td>
+                                    <td>@Pedido.EstadoPedido.Descripcion</td>
+                                    <td>@Pedido.FechaCreacion</td>
+                                    <td>@Pedido.Repartidor.Nombre</td>
+                                    <td>
+                                        <a class="btn btn-warning" href="@Url.Action("Form","Pedido", new { IdPedido = Pedido.IdPedido })"> <i class="bi bi-pencil-square"></i> </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" href="@Url.Action("Delete", "Pedido",  new { IdPedido = Pedido.IdPedido })"
+                                           onclick="return confirm('¿Desea eliminar esta Sucursal?')">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.MensajeError
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            
+        </div>
+    </div>
+</div>
+

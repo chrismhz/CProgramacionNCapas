@@ -1,0 +1,214 @@
+﻿@model ML.Producto
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">Registro de nuevo Producto</h2>
+            <center><h5> Formulario para el ingreso de un nuevo Producto, por favor trate de llenar cada campo correspondiente.</h5></center>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            @using (Html.BeginForm("Form", "Producto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.HiddenFor(model => model.Imagen)
+                @Html.AntiForgeryToken()
+                <div class="row mb-6">
+
+                    @*@Html.LabelFor(model => model.IdProducto, new { @class = "form-label" })*@
+                    @Html.TextBoxFor(model => model.IdProducto, "{0:#.#}", new { @class = "form-control", type = "hidden" })
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Nombre, new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @onkeypress = "ValidarNombre(event)" })
+                        @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Descripcion, new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Descripcion, new { @class = "form-control", @onkeypress = "ValidarDescripcion(event)" })
+                        @Html.ValidationMessageFor(model => model.Descripcion, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Precio, new { @class = "form-label" })
+                        @Html.TextBoxFor(model => model.Precio, "{0:0.00}", new { @class = "form-control", @onblur = "ValidarPrecio(this)" })
+                        @Html.ValidationMessageFor(model => model.Precio, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <br />
+
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.SubCategoria.Categoria.Categorias)
+                        @Html.DropDownListFor(model => model.SubCategoria.Categoria.IdCategoria, new SelectList(Model.SubCategoria.Categoria.Categorias, "IdCategoria", "Nombre"), "--- Selecciona una Categoria ---", new { @class = "form-control", @id = "ddlCategoria", @onchange = "SubCategoriaGetByIdCategoria()" })
+                    </div>
+
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.SubCategoria.SubCategorias)
+                        @if (Model.SubCategoria.SubCategorias != null)
+                        {
+                            @Html.DropDownListFor(model => model.SubCategoria.IdSubCategoria, new SelectList(Model.SubCategoria.SubCategorias, "IdSubCategoria", "Nombre"), "--- Selecciona una SubCategoria ---", new { @class = "form-control", @id = "ddlSubcategoria" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(model => model.SubCategoria.IdSubCategoria, new SelectList(String.Empty), "--- Selecciona una SubCategoria ---", new { @class = "form-control", @id = "ddlSubcategoria" })
+                        }
+
+                    </div>
+                </div>
+
+                <br />
+
+                @Html.LabelFor(model => model.Imagen)
+                <br />
+                <input id="ImagenProducto" name="ImagenProducto" type="file" class="form-control" onchange="visualizarImagen(this),  ValidarImagen();" />
+                <br />
+
+                if (Model.Imagen == null)
+                {
+                    <img id="img" src="~/Content/Img/Img_DefaultProduct.png" width="200" height="200" />
+                }
+                else
+                {
+                    <img id="img" src="data:image/png;base64,@Convert.ToBase64String(Model.Imagen)" width="200" height="200" />
+                }
+
+                <br />
+
+                <br />
+                <br />
+
+
+                <button type="submit" class="btn btn-success">Guadar</button>
+                @Html.ActionLink("Regresar Tabla", "GetAll", "Producto", new { @class = "btn btn-danger" })
+
+                @Html.ActionLink("Regresar Cards", "GetAllC", "Producto", new { @class = "btn btn-primary" })
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<style>
+    input.valid {
+        border-color: green;
+    }
+
+    input.invalid {
+        border-color: red;
+    }
+</style>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script type="text/javascript">
+
+    function visualizarImagen(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#img').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function SubCategoriaGetByIdCategoria() {
+    var idCategoria = $('#ddlCategoria').val();
+
+    $.ajax({
+        url: '@Url.Action("GetSubCategoriasByIdCategorias", "Producto")',
+        type: 'GET',
+        dataType: 'JSON',
+        data: { IdCategoria: idCategoria },
+        success: function (result) {
+            if (result.Correct) {
+                var subcategorias = result.Objects;
+
+                $('#ddlSubcategoria').empty();
+
+                var options = '<option value="" selected>--- Selecciona una SubCategoria ---</option>';
+
+                $.each(subcategorias, function (index, subcategoria) {
+                    options += '<option value="' + subcategoria.IdSubCategoria + '">' + subcategoria.Nombre + '</option>';
+                });
+
+                $('#ddlSubcategoria').empty().append(options);
+            } else {
+                alert('Error al cargar subcategorías: ' + result.ErrorMessage);
+            }
+        },
+        error: function () {
+            alert('Error al recibir las subcategorías.');
+        }
+    });
+    }
+
+    function ValidarNombre(event) {
+        var nombre = String.fromCharCode(event.charCode); //Convt ccaracter ing a r
+        var expRe = /^[A-Za-zÁÉÍÓÚáéíóú\s\.]+$/; ///^[A-Za-z\s\.]+$/
+
+
+        if (!expRe.test(nombre)) { //ev ci
+            event.preventDefault();
+            //alert("Nombre debe contener Unicamente Letras");
+            return false;
+        }
+        return true;
+    }
+
+    function ValidarDescripcion(event) {
+        var descripcion = String.fromCharCode(event.charCode);
+        var expRe = /^[A-Za-zÁÉÍÓÚáéíóú\s\.]+$/; // ^[A-Za-z0-9\s]+$
+        if (!expRe.test(descripcion)) {
+            event.preventDefault();
+            //alert("Nombre debe contener Unicamente Letras y numeros");
+            return false;
+        }
+        return true;
+    }
+
+    function ValidarPrecio(input) {
+        var precio = input.value;
+        var expRe = /^\d+\.\d{2}$/;
+        if (!expRe.test(precio)) {
+            alert("El precio debe de tener el formato correcto, por ejemplo: 20.00");
+            return false;
+        }
+        return true;
+    }
+
+    function ValidarImagen() {
+        var extensionesPermitidas = ['jpeg', 'jpg', 'png']; //Apartir de aqui
+        var extensionArchivo = document.getElementById('ImagenProducto').value.split('.').pop().toLowerCase();
+        var isValidFile = false; //Saber si es valida o no es valida
+        for (var index in extensionesPermitidas) {
+            if (extensionArchivo === extensionesPermitidas[index]) {
+                //if (extensionArchivo === index){
+                isValidFile = true;
+                break;
+            }
+        }
+        if (!isValidFile) {
+            alert('Las extensiones permitidas son: *.' + extensionesPermitidas.join(', *.'));
+            $("#ImagenProducto").val("")
+        }
+        return isValidFile;
+    }
+
+</script>
+

@@ -1,0 +1,249 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">Usuarios</h2>
+            <h5> Visualizacion de una lista de Usuarios que fueron registrados en la base de datos para la realizacion de este proyecto </h5>
+
+            <div class="container mt-4">
+                <div class="text-center mb-4">
+                    <div class="btn-group" role="group" aria-label="Opciones">
+                        <button type="button" class="btn btn-success boton-espaciado" onclick="showSection('cargaMasiva')">Carga Masiva Excel</button>
+                        <button type="button" class="btn btn-primary" onclick="showSection('BusquedaAbierta')">Búsqueda Abierta</button>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+        </div>
+    </div>
+
+    
+
+    <div id="divCargaMasiva" class="seccion" style="display:none;">
+        @using (Html.BeginForm("Excel", "CargaMasiva", FormMethod.Post, new { enctype = "multipart/form-data", @class = "" }))
+        {
+
+            <div class="text-center mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <div class="col-3">
+                        <h5>Carga Masiva Excel</h5>
+                        <br />
+                        <input type="file" id="excel" name="excel" class="form-control" />
+                        <br />
+                    </div>
+                    @if (Session["RutaExcel"] != null)
+                    {
+                        <button type="submit" id="submitButton" class="btn btn-primary">Subir</button>
+                    }
+                    else
+                    {
+                        <button type="submit" id="submitButton" class="btn btn-success">Verificar</button>
+                    }
+                </div>
+                <hr />
+            </div>
+
+        }
+    </div>
+
+    <div id="divBusquedaAbierta" class="seccion" style="display:none;">
+        @using (Html.BeginForm("GetAll", "Usuario", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <center><h5>Busqueda Abierta</h5></center>
+            <br />
+            <div class="row">
+                <div class="col-3">
+
+                    <label for="Nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="Nombre" name="Nombre" placeholder="Ingrese Nombre" value="@Request.QueryString["Nombre"]" />
+                </div>
+
+                <div class="col-3">
+                    <label for="ApellidoPaterno" class="form-label">ApellidoPaterno</label>
+                    <input type="text" class="form-control" id="ApellidoPaterno" name="ApellidoPaterno" placeholder="Ingrese Apellido Paterno" value="@Request.QueryString["ApellidoPaterno"]" />
+                </div>
+
+                <div class="col-3">
+                    <label for="ApellidoMaterno" class="form-label">Materno</label>
+                    <input type="text" class="form-control" id="ApellidoMaterno" name="ApellidoMaterno" placeholder="Ingrese Apellido Materno" value="@Request.QueryString["ApellidoMaterno"]" />
+                </div>
+
+                <div class="col-3">
+                    @Html.LabelFor(model => model.Rol, new { @class = "form-label" })
+                    @Html.DropDownListFor(model => model.Rol.IdRol, new SelectList(Model.Rol.Roles, "IdRol", "Nombre"), "Selecciona un Rol", new { @class = "form-control" })
+                    @*@Html.DropDownListFor(model => model.Rol.IdRol, new SelectList(Model.Rol.Roles, "IdRol", "Nombre"), "Selecciona un Rol", new { @class = "form-control" })*@
+                    @*@Html.DropDownListFor("IdRol", new SelectList(Model.Rol.Roles, "IdRol", "Nombre"), "Selecciona un Rol", new { @class = "form-control" })*@
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </div>
+            <hr />
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("Form", "Usuario")" class="btn btn-secondary">
+                <i class="bi bi-person-plus-fill"></i> Agregar
+            </a>
+            <br />
+            <br />
+            <div class="table-responsive">
+
+                @if (Model.Usuarios != null)
+                {
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Editar</th>
+                                @*<th>IdUsuario</th>*@
+                                <th>Nombre</th>
+                                <th>ApellidoPaterno</th>
+                                <th>ApellidoMaterno</th>
+                                <th>Direccion</th>
+                                <th>UserName</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Sexo</th>
+                                <th>Telefono</th>
+                                <th>Celular</th>
+                                <th>FechaNacimiento</th>
+                                <th>CURP</th>
+                                <th>Rol</th>
+                                @*<th>IdRol</th>*@
+                                <th>Imagen</th>
+
+                                <th>Estatus</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (ML.Usuario usuario in Model.Usuarios)
+                            {
+                                <tr>
+                                    <td>
+                                        <a class="btn btn-warning" href="@Url.Action("Form","Usuario", new { IdUsuario = usuario.IdUsuario })"> <i class="bi bi-pencil-square"></i> </a>
+                                    </td>
+
+                                    @*<td>@usuario.IdUsuario</td>*@
+                                    <td>@usuario.Nombre</td>
+                                    <td>@usuario.ApellidoPaterno</td>
+                                    <td>@usuario.ApellidoMaterno</td>
+                                    <td>
+                                        @usuario.Direccion.Calle,
+                                        @usuario.Direccion.NumeroInterior,
+                                        @usuario.Direccion.NumeroExterior,
+                                        @usuario.Direccion.Colonia.CodigoPostal,
+                                        @usuario.Direccion.Colonia.Municipio.Nombre,
+                                        @usuario.Direccion.Colonia.Municipio.Estado.Nombre
+                                    </td>
+                                    <td>@usuario.UserName</td>
+                                    <td>@usuario.Email</td>
+                                    <td>@usuario.Password</td>
+                                    <td>@usuario.Sexo</td>
+                                    <td>@usuario.Telefono</td>
+                                    <td>@usuario.Celular</td>
+                                    <td>@usuario.FechaNacimiento</td>
+                                    <td>@usuario.CURP</td>
+                                    <td>@usuario.Rol.Nombre</td>
+                                    <td>
+                                        @if (usuario.Imagen == null)
+                                        {
+                                            <img id="img" src="~/Content/Img/ImagenPorDefecto.png" width="100" height="100" />
+                                        }
+                                        else
+                                        {
+                                            <img id="img" src="data:image/png;base64,@Convert.ToBase64String(usuario.Imagen)" width="100" height="100" />
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (usuario.Status)
+                                        {
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked onchange="ChangeStatus(@usuario.IdUsuario, this)">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onchange="ChangeStatus(@usuario.IdUsuario, this)">
+                                            </div>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <a class="btn btn-danger" href="@Url.Action("Delete", "Usuario",  new { IdUsuario = usuario.IdUsuario })"
+                                           onclick="return confirm('¿Desea eliminar el usuario?')">
+                                            <i class="bi bi-person-x-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.MensajeError
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+    function ChangeStatus(idUsuario, e) {
+        var status = e.checked
+
+        $.ajax({
+            url: '@Url.Action("ChangeStatus")',
+            data: { IdUsuario: idUsuario, Status: status },
+            type: 'POST',
+            dataType: 'json',
+            success: {},
+            error: {
+                //alert('Error al cambiar el Status.');
+            }
+        })
+    }
+
+    function showSection(section) {
+        document.getElementById('divCargaMasiva').style.display = 'none';
+        document.getElementById('divBusquedaAbierta').style.display = 'none';
+
+        document.getElementById('div' + section.charAt(0).toUpperCase() + section.slice(1)).style.display = 'block';
+    }
+
+</script>
+
+<style>
+
+    .boton-espaciado{
+        margin-right: 30px;
+    }
+
+    .btn-lg {
+        width: 200px;
+        font-size: 1.2rem;
+    }
+
+    .btn-group {
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+

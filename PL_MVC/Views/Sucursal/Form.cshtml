@@ -1,0 +1,150 @@
+﻿@model ML.Sucursal
+@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center">Registro de una nueva Sucursal</h2>
+            <center><h5> Formulario para el ingreso de una nueva Sucursal.</h5></center>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+            @using (Html.BeginForm("Form", "Sucursal", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+
+                @*@html.labelfor(model => model.idsucursal, new { @class = "form-label" })*@
+                @Html.TextBoxFor(model => model.IdSucursal, "{0:#.#}", new { @class = "form-control", type = "hidden" })
+                <br />
+                @Html.LabelFor(model => model.Nombre, new { @class = "form-label" })
+                @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", placeholder = "Ingrese Nombre de la Sucursal", id = "Nombre", @onkeypress = "ValidarNombre(event)" })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                <br />
+                @Html.LabelFor(model => model.Latitud, new { @class = "form-label" })
+                @Html.TextBoxFor(model => model.Latitud, new { @class = "form-control", placeholder = "Ingrese Latitud", id = "latitud", @readonly = "readonly" })
+                <br />
+                @Html.LabelFor(model => model.Longitud, new { @class = "form-label" })
+                @Html.TextBoxFor(model => model.Longitud, new { @class = "form-control", placeholder = "Ingrese Longitud", id = "longitud", @readonly = "readonly" })
+                <br />
+                <br />
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Guadar</button>
+
+                    @Html.ActionLink("Regresar", "GeAllS", "Sucursal", new { @class = "btn btn-danger" })
+                </div>
+
+            }
+        </div>
+
+        <div class="col-8">
+            <div id="map" style="height: 400px; width: 600px;"></div>
+
+            <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&callback=initMap&libraries=places" defer></script>
+
+            <script>
+                //let coordenadas = { lat: @Model.Latitud, lng: @Model.Longitud }; Me permite tener la coordenada exacta de mi registro.
+                //let coordenadas = { lat: 19.430482044483313, lng: -99.16163406195687 }; Me permite tener la coordenada exacta de "Digis01".
+                let coordenadas = {
+                    lat: @(string.IsNullOrEmpty(Model.Latitud) ? 19.430482044483313 : Convert.ToDouble(Model.Latitud)),
+                    lng: @(string.IsNullOrEmpty(Model.Longitud) ? -99.16163406195687 : Convert.ToDouble(Model.Longitud))
+                };
+                let map;
+                let marcador;
+                let infoWindow;
+
+                function initMap() {
+                    const mapDiv = document.getElementById("map");
+                    map = new google.maps.Map(mapDiv, {
+                        center: coordenadas,
+                        zoom: 15,
+                    });
+
+                    infoWindow = new google.maps.InfoWindow();
+
+                    marcador = new google.maps.Marker({
+                        position: coordenadas,
+                        map: map,
+                        draggable: true // Poder hacer que el Marvador se mueva donde sea
+                    });
+
+                    // Escuchar el evento dragend (evento que arrastra sobre un elemento o texto selecionado)
+                    marcador.addListener('dragend', function (event) {
+                        const position = {
+                            lat: event.latLng.lat(),
+                            lng: event.latLng.lng()
+                    };
+
+                        // Se actulizaran las coordenadas en los texbox dependiendo de donde se mueva el Marcador
+                        document.getElementById('latitud').value = position.lat.toFixed(6);
+                        document.getElementById('longitud').value = position.lng.toFixed(6);
+
+                        // Mostrara y Actualizar la informacion entre el InfoWindow 
+                        infoWindow.setContent(`Latitud: ${position.lat.toFixed(6)}, <br/> Longitud: ${position.lng.toFixed(6)}`);
+                        infoWindow.setPosition(position);
+                        infoWindow.open(map);
+                    });
+
+                    // Para ver el InfoWindow, hacemos clic en el marcador
+                    marcador.addListener('click', function () {
+                        const position = {
+                            lat: marcador.getPosition().lat(),
+                            lng: marcador.getPosition().lng()
+                    };
+
+                        // Actualizar las coordenadas en los TextBox
+                        document.getElementById('latitud').value = position.lat.toFixed(6);
+                        document.getElementById('longitud').value = position.lng.toFixed(6);
+
+                        infoWindow.setContent(`Marcador en: ${position.lat.toFixed(6)}, ${position.lng.toFixed(6)}`);
+                        infoWindow.setPosition(position);
+                        infoWindow.open(map);
+                    });
+                }
+            </script>
+        </div>
+
+        @section Scripts{
+            @Scripts.Render("~/bundles/jqueryval")
+        }
+
+        <script src="~/Scripts/jquery-3.4.1.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+        <style>
+            input.valid {
+                border-color: green;
+            }
+
+            input.invalid {
+                border-color: red;
+            }
+        </style>
+
+        <script>
+            function ValidarNombre(event) {
+                var nombre = String.fromCharCode(event.charCode); //Convt ccaracter ing a r
+                var expRe = /^[A-Za-z\s\.]+$/;
+
+                if (!expRe.test(nombre)) { //ev ci
+                    event.preventDefault();
+                    return false;
+                }
+                return true;
+            }
+
+            $('#Nombre').bind("cut copy paste", function (e) {
+                e.preventDefault();
+            });
+        </script>
+
+    </div>
+</div>
+
+@* apiKey Google Maps = <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&callback=initMap&libraries=places"></script>*@
+

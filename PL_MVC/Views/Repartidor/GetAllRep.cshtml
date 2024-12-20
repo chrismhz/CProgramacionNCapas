@@ -1,0 +1,73 @@
+﻿@model ML.Repartidor
+@{
+    ViewBag.Title = "GetAllRep";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <h3 class="text-center">Repartidores</h3>
+        <h5 class="text-center">Tabla con un registro de Repartidores almacenados en la base de datos.</h5>
+        <hr />
+
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="@Url.Action("Form", "Repartidor")" class="btn btn-warning">
+                <i class="bi bi-car-front" style="margin-right: 10px;"></i>
+                Agregar Repartidor
+            </a>
+            <hr />
+            
+            
+            <div class="table-responsive">
+                @if(Model.Repartidores != null)
+                {
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                @*<th>IdRepartidor</th>*@
+                                <th>Nombre Repartidor</th>
+                                <th>Apellido Paterno</th>
+                                <th>Apellido Materno</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach(ML.Repartidor Repartidor in Model.Repartidores)
+                            {
+                                <tr>
+                                    @*<td>@Repartidor.IdRepartidor</td>*@
+                                    <td>@Repartidor.Nombre</td>
+                                    <td>@Repartidor.ApellidoPaterno</td>
+                                    <td>@Repartidor.ApellidoMaterno</td>
+                                    <td>
+                                        <a class="btn btn-primary" href="@Url.Action("Form","Repartidor", new {  IdRepartidor = Repartidor.IdRepartidor })"> <i class="bi bi-pencil-square"></i> </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" href="@Url.Action("Delete", "Repartidor",  new { IdRepartidor = Repartidor.IdRepartidor })"
+                                           onclick="return confirm('¿Desea eliminar este Repartidor?')">
+                                            <i class="bi bi-person-x-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                }
+                else 
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewBag.MensajeError
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
